@@ -1,7 +1,7 @@
 import React from "react";
 function Footer() {
   return (
-    <footer className="navbar fixed-bottom bg-dark">
+    <footer className="navbar fixed-bottom">
       Copyright &copy; {new Date().getFullYear()} Webucator
     </footer>
   );
