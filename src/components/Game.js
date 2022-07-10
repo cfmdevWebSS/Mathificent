@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import Score from "./Score";
 import Timer from "./Timer";
 import Equation from "./Equation";
@@ -14,6 +15,8 @@ function Game({ operation, maxNumber }) {
   const [userAnswer, setUserAnswer] = useState("");
   const [answered, setAnswered] = useState(false);
   const [score, setScore] = useState(0);
+  const gameLength = 60;
+  const [timeLeft, setTimeLeft] = useState(gameLength);
 
   function appendToAnswer(num) {
     setUserAnswer(String(Number(userAnswer + num)));
@@ -54,6 +57,12 @@ function Game({ operation, maxNumber }) {
     setOperands(randNums);
   }
 
+  function restart() {
+    setTimeLeft(gameLength);
+    setScore(0);
+    newQuestion();
+  }
+
   const equationClass = answered
     ? "row my-2 text-primary fade"
     : "row my-2 text-secondary";
@@ -85,6 +94,23 @@ function Game({ operation, maxNumber }) {
     <NumberButton value={number} key={number} handleClick={appendToAnswer} />
   ));
 
+  if (timeLeft === 0) {
+    return (
+      <div className="text-center" id="game-container">
+        <h2>Time's Up!</h2>
+        <strong style={{ fontsize: "1.5em" }}>You Answered</strong>
+        <div style={{ fontSize: "5em" }}>{score}</div>
+        <strong style={{ fontSize: "1.5em" }}>Questions Correctly</strong>
+        <button className="btn btn-primary form-control m-1" onClick={restart}>
+          Play Again with Same Settings
+        </button>
+        <Link className="btn btn-secondary form-control m-1" to="/">
+          Change Settings
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <main className="text-center" id="game-container">
       <div className="row border-bottom" style={{ fontSize: "1.5em" }}>
@@ -92,7 +118,7 @@ function Game({ operation, maxNumber }) {
           <Score score={score} />
         </div>
         <div className="col px-3 text-right">
-          <Timer timeLeft="60" />
+          <Timer timeLeft={timeLeft} setTimeLeft={setTimeLeft} />
         </div>
       </div>
       <div className={equationClass} id="equation">
